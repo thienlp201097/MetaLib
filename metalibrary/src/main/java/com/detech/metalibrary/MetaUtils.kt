@@ -375,6 +375,7 @@ object MetaUtils {
 
             override fun onError(ad: Ad, adError: AdError) {
                 // Ad error callback
+                adCallback.onAdFail(adError.errorMessage)
             }
 
             override fun onAdLoaded(ad: Ad) {
