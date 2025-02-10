@@ -17,7 +17,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
-import com.admob.max.dktlibrary.GoogleENative
+import com.admob.max.dktlibrary.MetaENative
 import com.airbnb.lottie.LottieAnimationView
 import com.detech.metalibrary.callback.AdsInterCallBack
 import com.detech.metalibrary.callback.AdsNativeCallBackAdmod
@@ -225,7 +225,7 @@ object MetaUtils {
         nativeHolder: NativeHolder,
         viewGroup: NativeAdLayout,
         layout: Int,
-        size: GoogleENative,
+        size: MetaENative,
         callback: AdsNativeCallBackAdmod
     ) {
         if (!isNetworkConnected(activity)) {
@@ -262,9 +262,9 @@ object MetaUtils {
                 nativeHolder.native_mutable.removeObservers((activity as LifecycleOwner))
             }
         } else {
-            val tagView: View = if (size === GoogleENative.UNIFIED_MEDIUM) {
+            val tagView: View = if (size === MetaENative.UNIFIED_MEDIUM) {
                 activity.layoutInflater.inflate(R.layout.layoutnative_loading_medium, null, false)
-            } else if (size === GoogleENative.UNIFIED_SMALL){
+            } else if (size === MetaENative.UNIFIED_SMALL){
                 activity.layoutInflater.inflate(R.layout.layoutnative_loading_small, null, false)
             }else{
                 activity.layoutInflater.inflate(R.layout.layoutbanner_loading, null, false)

@@ -1,6 +1,6 @@
 package com.admob.max.dktlibrary
 
-enum class GoogleEBanner {
+enum class MetaEBanner {
     UNIFIED_TOP,
     UNIFIED_BOTTOM
 }

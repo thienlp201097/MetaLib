@@ -2,7 +2,7 @@ package com.example.examplemetaads
 
 import android.app.Activity
 import android.view.ViewGroup
-import com.admob.max.dktlibrary.GoogleENative
+import com.admob.max.dktlibrary.MetaENative
 import com.detech.metalibrary.MetaUtils
 import com.detech.metalibrary.callback.AdsInterCallBack
 import com.detech.metalibrary.callback.AdsNativeCallBackAdmod
@@ -52,7 +52,7 @@ object AdsManager {
     }
 
     fun showNative(activity: Activity,nativeHolder: NativeHolder,viewGroup: NativeAdLayout){
-        MetaUtils.showNativeAdsWithLayout(activity,nativeHolder,viewGroup, com.detech.metalibrary.R.layout.layout_native_meta,GoogleENative.UNIFIED_MEDIUM,object :
+        MetaUtils.showNativeAdsWithLayout(activity,nativeHolder,viewGroup, com.detech.metalibrary.R.layout.layout_native_meta,MetaENative.UNIFIED_MEDIUM,object :
             AdsNativeCallBackAdmod {
             override fun NativeLoaded() {
                 
