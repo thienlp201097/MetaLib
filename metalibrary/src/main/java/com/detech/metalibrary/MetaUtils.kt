@@ -301,9 +301,97 @@ object MetaUtils {
         }
     }
 
+    fun loadAndShowNative(context: Activity,
+                          nativeHolder: NativeHolder,
+                          viewGroup: NativeAdLayout,
+                          layout: Int,
+                          size: MetaENative,
+                          adCallback: AdsNativeCallBackAdmod){
+        if (!isNetworkConnected(context)) {
+            adCallback.NativeFailed("No internet")
+            return
+        }
+        var id = nativeHolder.ads
+        //If native is loaded return
+        if (nativeHolder.nativeAd != null) {
+            Log.d("===AdsLoadsNative", "Native not null")
+            return
+        }
+        if (isTesting) {
+            id = "IMG_16_9_APP_INSTALL#" + nativeHolder.ads
+        }
+        val nativeAd = NativeAd(context, id)
+        val tagView: View = if (size === MetaENative.UNIFIED_MEDIUM) {
+            context.layoutInflater.inflate(R.layout.layoutnative_loading_medium, null, false)
+        } else if (size === MetaENative.UNIFIED_SMALL){
+            context.layoutInflater.inflate(R.layout.layoutnative_loading_small, null, false)
+        }else{
+            context.layoutInflater.inflate(R.layout.layoutbanner_loading, null, false)
+        }
+        try {
+            viewGroup.addView(tagView, 0)
+        }catch (_ : Exception){
+
+        }
+        if (shimmerFrameLayout == null) shimmerFrameLayout = tagView.findViewById(R.id.shimmer_view_container)
+        shimmerFrameLayout?.startShimmer()
+        val nativeAdListener: NativeAdListener = object : NativeAdListener {
+            override fun onMediaDownloaded(ad: Ad) {
+                // Native ad finished downloading all assets
+                Log.e(TAG, "Native ad finished downloading all assets.")
+            }
+
+            override fun onError(ad: Ad, adError: AdError) {
+                // Native ad failed to load
+                if (shimmerFrameLayout != null) {
+                    shimmerFrameLayout?.stopShimmer()
+                }
+                Log.e(TAG, "Native ad failed to load: " + adError.errorMessage)
+                nativeHolder.nativeAd = null
+                nativeHolder.isLoad = false
+                nativeHolder.native_mutable.value = null
+                adCallback.NativeFailed(adError.errorMessage)
+            }
+
+            override fun onAdLoaded(ad: Ad) {
+                // Native ad is loaded and ready to be displayed
+                Log.d(TAG, "Native ad is loaded and ready to be displayed!")
+                if (nativeAd == null || nativeAd != ad) {
+                    return;
+                }
+                if (shimmerFrameLayout != null) {
+                    shimmerFrameLayout?.stopShimmer()
+                }
+                try {
+                    inflateAd(context,nativeAd,layout,viewGroup)
+                }catch (_ : Exception){
+
+                }
+                adCallback.NativeLoaded()
+                // Inflate Native Ad into Container
+            }
+
+            override fun onAdClicked(ad: Ad) {
+                // Native ad clicked
+                Log.d(TAG, "Native ad clicked!")
+            }
+
+            override fun onLoggingImpression(ad: Ad) {
+                // Native ad impression
+                Log.d(TAG, "Native ad impression logged!")
+            }
+        }
+
+        // Request an ad
+        nativeAd.loadAd(
+            nativeAd.buildLoadAdConfig()
+                .withAdListener(nativeAdListener)
+                .build()
+        )
+    }
+
     private fun inflateAd(activity: Activity, nativeAd: NativeAd,layout : Int, viewGroup: NativeAdLayout) {
         nativeAd.unregisterView()
-
         // Add the Ad view into the ad container.
         val inflater = LayoutInflater.from(activity)
         // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
